@@ -1,0 +1,33 @@
+with hotels as(
+select * from dbo.['2018$']
+union
+select * from dbo.['2019$']
+union
+select * from dbo.['2020$'])
+
+select arrival_date_year,hotel ,
+ROUND(sum((stays_in_weekend_nights + stays_in_week_nights)*adr),2) as revenue 
+from hotels
+group by arrival_date_year,hotel
+order by revenue desc
+
+
+--this was to know the highest revenue generating hotels now we will find some other things in the market segment
+
+--here is the cost and items in the market segment
+
+
+select * from hotels
+left join dbo.market_segment$
+on hotels.market_segment = market_segment$.market_segment
+left join dbo.meal_cost$
+on meal_cost$.meal = hotels.meal
+ 
+-- I am using left joins here so that We can have all attributes of the left table as well all the 'matched' attribute of right table. So I can all clarity.
+
+--now I find out which country has highest number of booking changes while not having the distribution channel as 'corporate'
+
+select country,booking_changes from hotels
+where distribution_channel != 'Corporate'
+order by booking_changes desc
+
